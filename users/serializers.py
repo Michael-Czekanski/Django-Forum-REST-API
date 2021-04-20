@@ -9,4 +9,10 @@ class UserSerializer(serializers.Serializer):
     email = serializers.EmailField(allow_blank=True)
     password = serializers.CharField()
     date_joined = serializers.DateTimeField(default=datetime.now())
-    
+
+    def create(self, validated_data):
+        """
+        Create and return a new 'User' instance, given the validated data.
+        """
+
+        return User.objects.create(**validated_data)
