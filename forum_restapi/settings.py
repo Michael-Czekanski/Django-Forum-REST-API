@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'users.apps.UsersConfig',
+    'forum.apps.ForumConfig',
     'rest-framework',
     'django.contrib.admin',
     'django.contrib.auth',
