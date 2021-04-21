@@ -3,6 +3,7 @@ from .models import User
 from datetime import datetime
 
 class UserSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
     username = serializers.CharField(max_length=150)
     first_name = serializers.CharField(allow_blank=True, max_length=150)
     last_name = serializers.CharField(allow_blank=True, max_length=150)
