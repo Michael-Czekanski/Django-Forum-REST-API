@@ -7,12 +7,14 @@ class UserSerializer(serializers.Serializer):
     first_name = serializers.CharField(allow_blank=True, max_length=150)
     last_name = serializers.CharField(allow_blank=True, max_length=150)
     email = serializers.EmailField(allow_blank=True)
-    date_joined = serializers.DateTimeField(default=datetime.now())
+    date_joined = serializers.DateTimeField(read_only=True, default=datetime.now())
 
     def create(self, validated_data):
         """
         Create and return a new 'User' instance, given the validated data.
         """
+        # DEBUG
+        print("CREATING")
 
         return User.objects.create(**validated_data)
 
@@ -20,6 +22,8 @@ class UserSerializer(serializers.Serializer):
         """
         Update and return an existing `User` instance, given the validated data.
         """
+        # DEBUG
+        print("UPDATING")
 
         instance.username = validated_data.get('username', instance.username)
         instance.first_name = validated_data.get('first_name', instance.first_name)
