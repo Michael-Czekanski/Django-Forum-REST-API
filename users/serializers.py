@@ -7,7 +7,6 @@ class UserSerializer(serializers.Serializer):
     first_name = serializers.CharField(allow_blank=True, max_length=150)
     last_name = serializers.CharField(allow_blank=True, max_length=150)
     email = serializers.EmailField(allow_blank=True)
-    password = serializers.CharField()
     date_joined = serializers.DateTimeField(default=datetime.now())
 
     def create(self, validated_data):
