@@ -1,11 +1,13 @@
-from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .models import Topic
-from django.http import JsonResponse
 from .serializers import TopicSerializer
 
 
 # Create your views here.
 
+@api_view(['GET'])
 def topics_list(request):
     """
     List of all topics.
@@ -13,5 +15,5 @@ def topics_list(request):
 
     topics = Topic.objects.all()
     serializer = TopicSerializer(topics, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    return Response(serializer.data)
 
