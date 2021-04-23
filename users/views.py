@@ -1,16 +1,32 @@
-from django.shortcuts import render
-from django.http import JsonResponse
+from rest_framework import status
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserDetailSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
-# Create your views here.
+class UserList(APIView):
 
-def users_list(request):
-    """
-    List all users.
-    """
+    def get(self, request):
+        """
+        Return list of all users.
+        """
 
-    users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
-    return JsonResponse(serializer.data, safe=False)
+        serializer = UserSerializer(User.objects.all(), many=True)
+        return Response(serializer.data)
+
+
+class UserDetail(APIView):
+
+    def get(self, request, pk):
+        """
+        Return details of user.
+        """
+
+        try:
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserDetailSerializer(user)
+        return Response(serializer.data)
