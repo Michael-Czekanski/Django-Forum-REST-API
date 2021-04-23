@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import users_list
+from .views import UserList, UserDetail
 
 urlpatterns = [
-    path('all/', users_list, name='users_list')
+    path('list/', UserList.as_view(), name='users-list'),
+    path('<int:pk>/', UserDetail.as_view(), name='users-detail')
 ]
