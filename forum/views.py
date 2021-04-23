@@ -7,13 +7,20 @@ from .serializers import TopicSerializer
 
 # Create your views here.
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def topics_list(request):
     """
-    List of all topics.
+    List of all topics or create topic.
     """
 
-    topics = Topic.objects.all()
-    serializer = TopicSerializer(topics, many=True)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        topics = Topic.objects.all()
+        serializer = TopicSerializer(topics, many=True)
+        return Response(serializer.data)
 
+    elif request.method == 'POST':
+        serializer = TopicSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
