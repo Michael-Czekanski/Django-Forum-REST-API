@@ -10,7 +10,7 @@ class TopicSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=250)
     # read_only, because it shouldn't be updated or used to create during deserialization
     creation_date = serializers.DateTimeField(read_only=True, default=timezone.now)
-    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    created_by = serializers.PrimaryKeyRelatedField(required=False, queryset=User.objects.all())
 
     def create(self, validated_data):
         return Topic.objects.create(**validated_data)
