@@ -1,13 +1,15 @@
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .models import Topic
 from .serializers import TopicSerializer
+from rest_framework import permissions
 
 
 # Create your views here.
 
 @api_view(['GET', 'POST'])
+@permission_classes([permissions.IsAuthenticatedOrReadOnly])
 def topics_list(request):
     """
     List of all topics or create topic.
@@ -27,6 +29,7 @@ def topics_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([permissions.IsAuthenticatedOrReadOnly])
 def topic_detail(request, pk):
     try:
         topic = Topic.objects.get(pk=pk)
