@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import Topic
 from .serializers import TopicSerializer
 from rest_framework import permissions
+from rest_framework.views import APIView
 
 
 # Create your views here.
@@ -28,25 +29,34 @@ def topics_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([permissions.IsAuthenticatedOrReadOnly])
-def topic_detail(request, pk):
-    try:
-        topic = Topic.objects.get(pk=pk)
-    except Topic.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+class TopicDetail(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    if request.method == 'GET':
-        serializer = TopicSerializer(topic)
+    def __init__(self, *args, **kwargs):
+        super(TopicDetail, self).__init__(*args, **kwargs)
+        self.topic = None
+
+    def initial(self, request, *args, **kwargs):
+        super(TopicDetail, self).initial(request, args, kwargs)
+        self.topic = Topic.objects.get(pk=kwargs.get('pk'))
+        self.check_object_permissions(request, self.topic)
+
+    def handle_exception(self, exc):
+        if isinstance(exc, Topic.DoesNotExist):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return super(TopicDetail, self).handle_exception(exc)
+
+    def get(self, request, pk):
+        serializer = TopicSerializer(self.topic)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        serializer = TopicSerializer(instance=topic, data=request.data)
+    def put(self, request, pk):
+        serializer = TopicSerializer(instance=self.topic, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
-        topic.delete()
+    def delete(self, request, pk):
+        self.topic.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
