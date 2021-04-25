@@ -5,6 +5,7 @@ from .models import Topic
 from .serializers import TopicSerializer
 from rest_framework import permissions
 from rest_framework.views import APIView
+from .permissions import IsCreatorOrReadOnly
 
 
 # Create your views here.
@@ -30,7 +31,7 @@ def topics_list(request):
 
 
 class TopicDetail(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsCreatorOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
 
     def __init__(self, *args, **kwargs):
         super(TopicDetail, self).__init__(*args, **kwargs)
